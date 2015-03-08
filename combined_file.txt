@@ -1,0 +1,38 @@
+
+// Full Adder rtl
+// default_slice
+
+module full_adder
+  (a0, b0, c0, a1, b1, c_out, s_out, s2, d_out, s3);
+
+   // Inputs
+   input  a0;
+   input  b0;
+   input  c0;
+   input  a1;
+   input  b1;
+      
+   // Outputs
+   output c_out;
+   output s_out;
+   output s2;
+   output d1;
+   output s3;
+
+   // Wires
+   wire   c1;
+   wire   c2;
+   wire   s1;
+   wire   d1;
+   wire   c3;
+
+   // Some assignments
+   assign carry_out = c1 | c2;
+   assign s_out = s1;
+   assign d_out = d1;
+   
+   // Instantiating two half-adders to make the circuit.
+   
+   
+   // default_slice             
+endmodule 

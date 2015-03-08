@@ -1,0 +1,15 @@
+
+   // Instructions : I1, I3
+   half_adder u2_half_adder
+     (
+      // Inputs
+      .in_x(s0),
+      .in_y(c0),
+      // End of inputs
+      // Outputs
+      .out_sum(s1),
+      .out_carry(c2)
+      // End of outputs
+      );                    
+   
+   

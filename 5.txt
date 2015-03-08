@@ -1,0 +1,15 @@
+
+   // Instructions : I6, I7
+   test2 test2
+     (
+      // Inputs
+      .in_1(d1),
+      .in_2(c3),
+      .in_3(b1),
+      // End of inputs
+      // Outputs
+      .out_1(s3)
+      // End of outputs
+      );
+   
+   

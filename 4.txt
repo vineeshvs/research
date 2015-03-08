@@ -1,0 +1,18 @@
+
+   // Instructions : I4, I5
+   test1 test1
+     (
+      // Inputs
+      .in_1(s1),
+      .in_2(s0),
+      .in_3(a1),
+      .in_4(b1),
+      // End of inputs
+      // Outputs
+      .out_1(s2),
+      .out_2(d1),
+      .out_3(c3)
+      // End of outputs
+      );                 
+   
+   

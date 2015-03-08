@@ -1,0 +1,11 @@
+
+   // I1, I2
+   half_adder u1_half_adder
+     (
+      .in_x(in_x),
+      .in_y(in_y),
+      .out_sum(w_sum1),
+      .out_carry(w_carry1)
+      );                    
+   
+   // 

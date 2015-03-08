@@ -1,0 +1,10 @@
+
+   // I1, I3
+   half_adder u2_half_adder
+     (
+      .in_x(w_sum1),
+      .in_y(carry_in),
+      .out_sum(sum_out),
+      .out_carry(w_carry2)
+      );              
+endmodule 
