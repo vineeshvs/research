@@ -3,13 +3,13 @@
 git init
 git pull https://github.com/vineeshvs/research.git
 git add *
-echo "\nEnter the commit message"
+echo "\nENTER COMMIT MESSAGE"
 echo "*************************\n"
-git commit -m '$1
-'
-echo "\nBelow is the git status"
+read commit_message
+git commit -m '$commit_message'
+echo "\n\nGIT STATUS\n\n"
 echo "*************************\n"
 git status
-echo "\nPushing to the directory  'https://github.com/vineeshvs/research.git'"
+echo "\nPUSING INTO THE DIRECTORY  'https://github.com/vineeshvs/research.git'\n"
 echo "***********************************************************************" 
 git push https://github.com/vineeshvs/research.git
