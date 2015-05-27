@@ -46,59 +46,8 @@ def rem_space(list_name):
 		pass
 
 """ Find out the modules which gives certain signals as output """
-def locate_modules(verilog_file, output_signal):
-    	lines = open(verilog_file, 'rt').read()
-	modules = []
-	k=0
-	i=0			
-        l=0
-	with open('full_adder.v')as f:
-            for line in f:
-                if i==1:
-                    """Inside the module instantiation"""    
-                    m=line.split()[1]
-                    #print "The module name is %s" %(m)
-                    #print "output_signal is %s" %(output_signal)
-                    i=0
-                    k=1
-                    #modules.append(line.split()[1])
-                    #print ("inside module")
-                if k==1:
-                    #print "k==1"
-                    """Extracting the module name"""
-                    if l==1:
-                        #print "l==1"
-                        print find_between(line,"(",")")
-                        if(find_between(line,"(",")")==output_signal):
-                            #rem_space(modules.append(m))
-                            modules.append(m)
-                            print"The module list %s" %(modules)
-                            i=0
-                            k=0
-                    elif "End of outputs" in line:
-                        #print "End of outputs"
-                        l=0
-                        k=0
-                        #print "l=0"
-                    elif "Outputs" in line:
-                        l=1 
-                        #print "Outputs detected"
-                    else:
-                        #print"Neither outputs not End of outputs"  
-                        #print line
-                        l=0
-                        k=1
-                if "Module instantiation" in line:
-                    i = 1
-                    k=0
-                    l=0
-                    #print "Module instantiation"
-                elif ");" in line:
-                    i = 0
-                    k=0
-                    l=0
-                    #print "Module ends" 
-        return modules
+def locate_modules(output_signal):
+	print "work in progress"
 
 """Function to return the inputs and outputs of a module
 Inputs: The name of MUT (Add the verilog file name later)
@@ -140,16 +89,10 @@ def find_inputs_of_module(verilog_file, module_name):
 	#print outputs_test_module
 	return inputs_test_module, outputs_test_module
 
-
-
 """ MAIN()"""
 ##############
 
+""" Searching for module name """
 module = raw_input ("Give the name of the module to be tested:")
-"""Get the inputs and outputs of the MUT"""
 print find_inputs_of_module("full_adder.v", module)
-inputs_test_module,outputs_test_module=find_inputs_of_module("full_adder.v", module)
 
-#locate_modules("full_adder.v","s3")
-modules=locate_modules("full_adder.v",inputs_test_module[0])
-print modules

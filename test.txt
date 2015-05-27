@@ -1,2 +1,3 @@
-module
-test
+Input
+input a;
+

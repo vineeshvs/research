@@ -1,0 +1,129 @@
+# Slicing code
+# Courtesy: Stackoverflow and many other sites  
+
+from glob import iglob
+import shutil
+import os
+import sys
+
+#----------------------------------------------------------------------------------------------------------------------------------
+# Fresh execution of program
+
+print "\nHere we go" 
+print "****************************\n"
+
+#----------------------------------------------------------------------------------------------------------------------------------
+# FUNCTION DEFINITION
+
+# Find a string between two strings
+def find_between( s, first, last ):
+    try:
+        start = s.index( first ) + len( first )
+        end = s.index( last, start )
+        return s[start:end]
+    except ValueError:
+        print "error"
+        return ""
+
+'''
+# Testing function find_between
+s = "123vineeshabc"
+a = find_between( s, "123", "abc" )
+print a
+''' 
+#----------------------------------------------------------------------------------------------------------------------------------
+# Print the contents of a file
+
+def print_file(file_name):
+    f_1 = open (file_name)
+    for line in f_1:
+        print line    
+    print "------------------------------------------------------------"
+
+#----------------------------------------------------------------------------------------------------------------------------------
+# Remove spaces in a list of strings
+
+def rem_space(list_name):
+    while True:
+        try:
+            list_name.remove("")
+        except ValueError:
+            print "No blank space in the string"
+            break
+        pass
+#----------------------------------------------------------------------------------------------------------------------------------
+
+lines = open("full_adder.v", 'rt').read()
+
+#----------------------------------------------------------------------------------------------------------------------------------
+# Searching for module name
+ 
+# module = sys.stdin.readline()
+module = raw_input ("Give the name of the module to be tested:")
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+#Extracting inputs and outputs of module to be tested
+
+print "\nExtracting inputs and outputs of module to be tested"
+print "\n****************************************************\n"
+inputs_test_module = []
+outputs_test_module = []
+k = 0
+i = 0
+    
+with open('full_adder.v') as f:
+    for line in f:
+		#print line
+		#print "k=%d" %(k)
+		#print "i=%d" %(i)
+		# Flag when program enters the MUT port mapping
+		if module in line:
+			i = 1
+			#print "1"	
+		elif ");" in line:
+			i = 0
+			#print "2"
+		if i == 1:
+			#print (i==1)
+			#print "3"
+			if "Inputs" in line:
+				k = 1
+				#print line		
+			elif "Outputs" in line:
+				k = 2
+			if k == 1:	
+			#if (k == 1) & (i == 1):
+				#print "i=%d" %(i)					
+				#print line				
+				m = find_between (line, "(", ")")
+				print m
+				#print "k=%d" %(k)
+				inputs_test_module.append (find_between (line, "(", ")"))
+				if "End of inputs" in line:
+					k = 0
+					#print "k=%d" %(k)
+			elif k == 2:	
+			#if (k == 1) & (i == 1):
+				#print "i=%d" %(i)					
+				#print line				
+				m = find_between (line, "(", ")")
+				print m
+				#print "k=%d" %(k)
+				outputs_test_module.append (find_between (line, "(", ")"))
+				if "End of outputs" in line:
+					k = 0
+					#print "k=%d" %(k)
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+# Removing spaces in the strings 'inputs_test_module' and 'outputs_test_module
+
+rem_space (inputs_test_module)
+print inputs_test_module
+rem_space (outputs_test_module)
+print outputs_test_module
+
+#----------------------------------------------------------------------------------------------------------------------------------
+
+

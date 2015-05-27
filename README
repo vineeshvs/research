@@ -1,0 +1,29 @@
+This file will help you understand what's going on in the folder 'slicing' -- vineeshvs (21/05/15)
+-------------------------------------------------------------------------------------------------------------------------------------
+
+22/05/15:
+---------
+
+* The original 'slicing' folder is moved to ../backups/slicing_removing_MUT_also 
+
+26/05/15:
+---------
+
+* Restricitons on Verilog code:
+	*
+	// Module instantiation <-- (Comment is necessary)
+   half_adder u2_half_adder ( <--(Upto this bracket should be in the same line. Next line onwards port mapping should start)
+      // Inputs <--(Comment is necessary)
+      .in_x(s0),
+      .in_y(c0),
+      // End of inputs <--(Comment is necessary)
+      // Outputs <--(Comment is necessary)
+      .out_sum(s1),
+      .out_carry(c2)
+      // End of outputs <--(Comment is necessary)
+      );         
+	* 
+	
+26/05/15:
+---------
+* Writing function to find inputs of top module	

@@ -1,9 +1,6 @@
-// slice
 // Full Adder rtl
-// default_slice
 
-module full_adder
-  (a0, b0, c0, a1, b1, c_out, s_out, s2, d_out, s3);
+module full_adder (a0, b0, c0, a1, b1, c_out, s_out, s2, d_out, s3);
 
    // Inputs
    input  a0;
@@ -33,10 +30,8 @@ module full_adder
    
    // Instantiating two half-adders to make the circuit.
    
-   // slice
-   // Instructions : I1, I2
-   half_adder u1_half_adder
-     (
+   // Module instantiation
+   half_adder u1_half_adder (
       // Inputs
       .in_x(a0),
       .in_y(b0),
@@ -47,10 +42,8 @@ module full_adder
       // End of outputs
       );                    
    
-   // slice
-   // Instructions : I1, I3
-   half_adder u2_half_adder
-     (
+   // Module instantiation
+   half_adder u2_half_adder ( 	
       // Inputs
       .in_x(s0),
       .in_y(c0),
@@ -61,10 +54,8 @@ module full_adder
       // End of outputs
       );                    
    
-   // slice
-   // Instructions : I4, I5
-   test1 test1
-     (
+   // Module instantiation
+   test1 test1 (
       // Inputs
       .in_1(s1),
       .in_2(s0),
@@ -78,10 +69,8 @@ module full_adder
       // End of outputs
       );                 
    
-   // slice
-   // Instructions : I6, I7
-   test2 test2
-     (
+   // Module instantiation
+   test2 test2 (
       // Inputs
       .in_1(d1),
       .in_2(c3),
@@ -92,6 +81,4 @@ module full_adder
       // End of outputs
       );
    
-   // slice
-   // default_slice             
 endmodule 
