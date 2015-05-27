@@ -13,9 +13,9 @@ git status
 echo "\nPUSING INTO THE DIRECTORY  'https://github.com/vineeshvs/research.git'\n"
 echo "***********************************************************************" 
 git push https://github.com/vineeshvs/research.git
-set prompt ":|#|\\\$"
+#set prompt ":|#|\\\$"
 #set prompt "Username for 'https://github.com': "
 #interact -o -nobuffer -re $prompt return
-send "vineeshvs\r"
+#send "vineeshvs\r"
 #interact -o -nobuffer -re $prompt return
-send "vineeshvs6\r" 
+#send "vineeshvs6\r" 
