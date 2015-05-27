@@ -5,7 +5,8 @@ git pull https://github.com/vineeshvs/research.git
 git add *
 echo "\nEnter the commit message"
 echo "*************************\n"
-git commit -m "$1"
+git commit -m '$1
+'
 echo "\nBelow is the git status"
 echo "*************************\n"
 git status
