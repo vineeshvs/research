@@ -13,7 +13,9 @@ git status
 echo "\nPUSING INTO THE DIRECTORY  'https://github.com/vineeshvs/research.git'\n"
 echo "***********************************************************************" 
 git push https://github.com/vineeshvs/research.git
-autoexpect "Username for 'https://github.com':"
-send "vineeshvs"
-autoexpect "Password for 'https://vineeshvs@github.com':"
-send "vineeshvs6"
+set prompt ":|#|\\\$"
+#set prompt "Username for 'https://github.com': "
+interact -o -nobuffer -re $prompt return
+send "vineeshvs\r"
+interact -o -nobuffer -re $prompt return
+send "vineeshvs6\r" 
