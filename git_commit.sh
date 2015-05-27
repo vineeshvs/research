@@ -1,4 +1,4 @@
-#!bin/bash
+#!bin/expect
 # SAMPLE USAGE: source git_commit.sh "This is my commit message"
 git init
 git pull https://github.com/vineeshvs/research.git
@@ -13,7 +13,7 @@ git status
 echo "\nPUSING INTO THE DIRECTORY  'https://github.com/vineeshvs/research.git'\n"
 echo "***********************************************************************" 
 git push https://github.com/vineeshvs/research.git
-expect "Username for 'https://github.com':"
+autoexpect "Username for 'https://github.com':"
 send "vineeshvs"
-expect "Password for 'https://vineeshvs@github.com':"
+autoexpect "Password for 'https://vineeshvs@github.com':"
 send "vineeshvs6"
