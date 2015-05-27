@@ -1,4 +1,4 @@
-#!bin/expect
+#!bin/bash
 # SAMPLE USAGE: source git_commit.sh "This is my commit message"
 git init
 git pull https://github.com/vineeshvs/research.git
