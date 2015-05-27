@@ -27,3 +27,7 @@ This file will help you understand what's going on in the folder 'slicing' -- vi
 26/05/15:
 ---------
 * Writing function to find inputs of top module	
+* Restricitons on Verilog code (Contd.):
+	* For extracting the inputs of the top module, the following conditions are to be satisfied
+		* input  a0; <-- Each input should be separately declared (& NOT as 'input a0,b0;')
+   		  input  b0; <-- 'input[SPACE][INPUT_NAME];' 	
