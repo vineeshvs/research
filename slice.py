@@ -54,7 +54,7 @@ def locate_modules(verilog_file, output_signal):
     k=0
     i=0			
     l=0
-    with open('full_adder.v')as f:
+    with open(verilog_file)as f:
         for line in f:
             if i==1:
                 """Inside the module instantiation"""    
@@ -102,6 +102,21 @@ def locate_modules(verilog_file, output_signal):
                 l=0
                     #print "Module ends" 
     return module
+
+def find_sub_modules(verilog_file):
+    """Find out the sub-modules in a Verilog file """
+    lines = open(verilog_file, 'rt').read()
+    sub_module=[]
+    i=0
+    with open(verilog_file)as f:
+        for line in f:
+            if i==1:
+                """Inside the module instantiation"""    
+                sub_module.append(line.split()[1])
+                i=0
+            elif "Module instantiation" in line:
+                i=1
+    return sub_module
 
 def find_inputs_of_module(verilog_file, module_name):
     """Function to return the inputs and outputs of a module
@@ -175,6 +190,51 @@ def replace_all(text, dic):
     for i, j in dic.iteritems():
         text = text.replace(i, j)
     return text
+
+def find_modules_input_fan_in_cone(verilo_file, MUT):
+    """Definition of some lists"""
+    """Queue which contains the signals in the fan-in cone of the MUT.\
+    It is changed dynamically"""
+    input_queue=[]
+    input_queue_traced=[]
+    """Modules which come in the fan in cone of the MUT"""
+    modules_required=[]
+    primary_input_set=[]
+    signal_module_pairs=[]
+    modules_required.append(MUT)
+    input_queue=find_inputs_of_module(VERILOG_FILE_NAME,MUT)[0]
+    print input_queue
+    primary_inputs=find_inputs_of_top_module(VERILOG_FILE_NAME)
+    print "primary_inputs: \n",primary_inputs
+    #print modules_required
+    """Loop to find modules_required (which have to be retained on slicing"""
+    for signal in input_queue:
+        if (signal not in  input_queue_traced):
+            if (signal not in  primary_inputs):
+                print "signal now is %s" %(signal)
+                input_queue_traced.append(signal)
+                print "input_queue_traced"
+                print input_queue_traced
+                #print "locate_modules(VERILOG_FILE_NAME,signal) = %s" %(locate_modules(VERILOG_FILE_NAME,signal))
+                if(locate_modules(VERILOG_FILE_NAME,signal)!=""):
+                    """If loop is to avoid blank module names"""
+                    """For the purpose of plotting digraph, the signal and module driving\
+                    the signal are shown as tuple (signal, module_with_signal_as_output)"""
+                    signal_module_pairs.append((signal,locate_modules(VERILOG_FILE_NAME,signal)))
+                    modules_required.append(locate_modules(VERILOG_FILE_NAME,signal))
+                    print remove_duplicates(modules_required)
+                    for i in range(len(find_inputs_of_module(VERILOG_FILE_NAME,\
+                                                                 locate_modules(VERILOG_FILE_NAME,signal))[0])):
+                        input_queue.append(find_inputs_of_module\
+                                               (VERILOG_FILE_NAME,locate_modules(VERILOG_FILE_NAME,signal))[0][i])
+                    #remove_duplicates(input_queue)
+                    print "input_queue"
+                    print input_queue
+                    print "input_queue_traced_latest"
+                    print input_queue_traced
+                    print "one iteration done"
+    print"\nAll done. Yeyy!!!"
+    return modules_required, signal_module_pairs
             
 """ MAIN()"""
 ##############
@@ -182,6 +242,7 @@ def replace_all(text, dic):
 """Uncomment later"""
 #MUT = raw_input ("Give the name of the module to be tested:")
 MUT="test1"
+
 #MUT="u1_half_adder"
 """Get the inputs and outputs of the MUT"""
 #print find_inputs_of_module("full_adder.v", "test2")
@@ -191,47 +252,6 @@ MUT="test1"
 #modules=locate_modules("full_adder.v",inputs_test_module[0])
 #print modules
 
-"""Definition of some lists"""
-"""Queue which contains the signals in the fan-in cone of the MUT.\
-It is changed dynamically"""
-input_queue=[]
-input_queue_traced=[]
-"""Modules which come in the fan in cone of the MUT"""
-modules_required=[]
-primary_input_set=[]
-signal_module_pairs=[]
-modules_required.append(MUT)
-input_queue=find_inputs_of_module(VERILOG_FILE_NAME,MUT)[0]
-print input_queue
-primary_inputs=find_inputs_of_top_module(VERILOG_FILE_NAME)
-print "primary_inputs: \n",primary_inputs
-#print modules_required
-"""Loop to find modules_required (which have to be retained on slicing"""
-for signal in input_queue:
-    if (signal not in  input_queue_traced):
-        if (signal not in  primary_inputs):
-            print "signal now is %s" %(signal)
-            input_queue_traced.append(signal)
-            print "input_queue_traced"
-            print input_queue_traced
-        #print "locate_modules(VERILOG_FILE_NAME,signal) = %s" %(locate_modules(VERILOG_FILE_NAME,signal))
-            if(locate_modules(VERILOG_FILE_NAME,signal)!=""):
-                """If loop is to avoid blank module names"""
-                """For the purpose of plotting digraph, the signal and module driving\
-                the signal are shown as tuple (signal, module_with_signal_as_output)"""
-                signal_module_pairs.append((signal,locate_modules(VERILOG_FILE_NAME,signal)))
-                modules_required.append(locate_modules(VERILOG_FILE_NAME,signal))
-                print remove_duplicates(modules_required)
-                for i in range(len(find_inputs_of_module(VERILOG_FILE_NAME,\
-                                                             locate_modules(VERILOG_FILE_NAME,signal))[0])):
-                    input_queue.append(find_inputs_of_module\
-                                           (VERILOG_FILE_NAME,locate_modules(VERILOG_FILE_NAME,signal))[0][i])
-            #remove_duplicates(input_queue)
-                print "input_queue"
-                print input_queue
-                print "input_queue_traced_latest"
-                print input_queue_traced
-                print "one iteration done"
-print"\nAll done. Yeyy!!!"
-
-print find_inputs_of_top_module(VERILOG_FILE_NAME)
+#print find_inputs_of_top_module(VERILOG_FILE_NAME)
+#print find_sub_modules(VERILOG_FILE_NAME)
+print find_modules_input_fan_in_cone(VERILOG_FILE_NAME, MUT)
