@@ -1,13 +1,14 @@
 # Slicing code
 # Courtesy: Stackoverflow and many other sites  
 
-from glob import iglob
 import shutil
 import os
 import sys
 import re
+import logging
 """Importing the constants defined in the file constants.py"""
 from constants import *
+from glob import iglob
 
 print "\nHere we go" 
 print "*************\n"
@@ -203,18 +204,18 @@ def find_modules_input_fan_in_cone(verilo_file, MUT):
     signal_module_pairs=[]
     modules_required.append(MUT)
     input_queue=find_inputs_of_module(VERILOG_FILE_NAME,MUT)[0]
-    print input_queue
+    #print input_queue
     primary_inputs=find_inputs_of_top_module(VERILOG_FILE_NAME)
-    print "primary_inputs: \n",primary_inputs
+    #print "primary_inputs: \n",primary_inputs
     #print modules_required
     """Loop to find modules_required (which have to be retained on slicing"""
     for signal in input_queue:
         if (signal not in  input_queue_traced):
             if (signal not in  primary_inputs):
-                print "signal now is %s" %(signal)
+                #print "signal now is %s" %(signal)
                 input_queue_traced.append(signal)
-                print "input_queue_traced"
-                print input_queue_traced
+                #print "input_queue_traced"
+                #print input_queue_traced
                 #print "locate_modules(VERILOG_FILE_NAME,signal) = %s" %(locate_modules(VERILOG_FILE_NAME,signal))
                 if(locate_modules(VERILOG_FILE_NAME,signal)!=""):
                     """If loop is to avoid blank module names"""
@@ -222,36 +223,141 @@ def find_modules_input_fan_in_cone(verilo_file, MUT):
                     the signal are shown as tuple (signal, module_with_signal_as_output)"""
                     signal_module_pairs.append((signal,locate_modules(VERILOG_FILE_NAME,signal)))
                     modules_required.append(locate_modules(VERILOG_FILE_NAME,signal))
-                    print remove_duplicates(modules_required)
+                    #print remove_duplicates(modules_required)
                     for i in range(len(find_inputs_of_module(VERILOG_FILE_NAME,\
                                                                  locate_modules(VERILOG_FILE_NAME,signal))[0])):
                         input_queue.append(find_inputs_of_module\
                                                (VERILOG_FILE_NAME,locate_modules(VERILOG_FILE_NAME,signal))[0][i])
                     #remove_duplicates(input_queue)
+                    """
                     print "input_queue"
                     print input_queue
                     print "input_queue_traced_latest"
                     print input_queue_traced
                     print "one iteration done"
     print"\nAll done. Yeyy!!!"
+    """
     return modules_required, signal_module_pairs
-            
+
+def log_data():    
+    """Logging warnings, error messages and useful info to a file""" 
+    """use 'a' to append the log file"""
+    """Overwriting the log file is not working. Try later""" 
+    logging.basicConfig(
+        filename='log/slice_log.txt',
+        filemode='w',
+        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+        datefmt='%H:%M:%S',
+        level=logging.DEBUG)
+    return logging
+
+def slice_code(verilog_file, modules_to_be_sliced):
+    """Removing modules_to_be_sliced"""
+    k=0
+    f=open(verilog_file, 'rt')
+    f_sliced=open('sliced_files/'+verilog_file.split('.v')[0]+'_sliced'+'.v', 'w')
+    for module in modules_to_be_sliced:
+        for line in f:
+            match=re.search(r'^\s*\w+\s%s' %(module), line)
+        #match=re.search(r'\w+\s%s' %(module), line)
+            if match:
+                k=1
+                print match.group()
+            #inputs.append(match.group())        
+            if k==1:
+                if (re.search(r';',line)):
+                    print line
+                    k=0
+            elif k==0:
+                print "k==0"
+                f_sliced.write(line)
+    f.close()
+    f_sliced.close()
+
+
 """ MAIN()"""
 ##############
+
+"""Declarations"""
+modules_required=[]
+inputs_modules_required=[]
+outputs_modules_required=[]
+all_modules=[]
+modules_to_be_sliced=[]
+inputs_modules_to_be_sliced=[]
+outputs_modules_to_be_sliced=[]
+
+"""Logging is not updating th file: Do later"""
+#logger=log_data()
+#logging=log_data()
+"""
+logging.basicConfig(
+    filename='log/slice_log.txt',
+    filemode='w',
+    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+    datefmt='%H:%M:%S',
+    level=logging.DEBUG)
+logging.info("Info")
+logging.error("error message")
+logging.warning("warning message")
+"""
 
 """Uncomment later"""
 #MUT = raw_input ("Give the name of the module to be tested:")
 MUT="test1"
 
-#MUT="u1_half_adder"
-"""Get the inputs and outputs of the MUT"""
-#print find_inputs_of_module("full_adder.v", "test2")
-#inputs_test_module,outputs_test_module=find_inputs_of_module("full_adder.v", MUT)
-#print inputs_test_module
-#locate_modules("full_adder.v","s3")
-#modules=locate_modules("full_adder.v",inputs_test_module[0])
-#print modules
-
 #print find_inputs_of_top_module(VERILOG_FILE_NAME)
-#print find_sub_modules(VERILOG_FILE_NAME)
-print find_modules_input_fan_in_cone(VERILOG_FILE_NAME, MUT)
+"""Modules which have to be retained while slicing"""
+modules_required=find_modules_input_fan_in_cone(VERILOG_FILE_NAME, MUT)[0]
+"""List of all sub-modules in which does port-mapping in VERILOG_FILE_NAME""" 
+all_modules=find_sub_modules(VERILOG_FILE_NAME)
+"""Modules which should be removed"""
+modules_to_be_sliced=list(set(all_modules)-set(modules_required))
+"""Find inputs of modules_required"""
+for module in modules_required:
+    inputs_modules_required=inputs_modules_required+find_inputs_of_module(VERILOG_FILE_NAME,module)[0]
+inputs_modules_required=remove_duplicates(inputs_modules_required)
+#print inputs_modules_required
+"""Find inputs of modules_to_be_sliced"""
+for module in modules_to_be_sliced:
+    inputs_modules_to_be_sliced=inputs_modules_to_be_sliced+find_inputs_of_module(VERILOG_FILE_NAME,module)[0]
+inputs_modules_to_be_sliced=remove_duplicates(inputs_modules_to_be_sliced)
+#print inputs_modules_to_be_sliced
+"""Find outputs of modules_required"""
+for module in modules_required:
+    outputs_modules_required=outputs_modules_required+find_inputs_of_module(VERILOG_FILE_NAME,module)[1]
+outputs_modules_required=remove_duplicates(outputs_modules_required)
+#print outputs_modules_required
+"""Find outputs of modules_to_be_sliced"""
+for module in modules_to_be_sliced:
+    outputs_modules_to_be_sliced=outputs_modules_to_be_sliced+find_inputs_of_module(VERILOG_FILE_NAME,module)[1]
+outputs_modules_to_be_sliced=remove_duplicates(outputs_modules_to_be_sliced)
+#print outputs_modules_to_be_sliced
+
+"""Removing modules_to_be_sliced"""
+"""
+k=0
+f=open(VERILOG_FILE_NAME, 'rt')
+f_sliced=open('sliced_files/'+VERILOG_FILE_NAME.split('.v')[0]+'_sliced'+'.v', 'w')
+for module in modules_to_be_sliced:
+    for line in f:
+        match=re.search(r'^\s*\w+\s%s' %(module), line)
+        #match=re.search(r'\w+\s%s' %(module), line)
+        if match:
+            k=1
+            print match.group()
+            #inputs.append(match.group())        
+        if k==1:
+            if (re.search(r';',line)):
+                print line
+                k=0
+        elif k==0:
+            print "k==0"
+            f_sliced.write(line)
+f.close()
+f_sliced.close()
+"""
+
+slice_code(VERILOG_FILE_NAME, modules_to_be_sliced)
+    
+

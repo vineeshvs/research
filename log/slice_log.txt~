@@ -1,0 +1,65 @@
+19:57:02,416 root INFO Running Urban Planning
+19:57:14,914 root INFO Running Urban Planning
+19:58:43,908 root INFO Running Urban Planning
+19:58:43,909 root ERROR Running Urban Planning
+19:58:43,909 root WARNING Running Urban Planning
+19:59:22,169 root INFO Running Urban Planning
+19:59:22,169 root ERROR Running Urban Planning
+19:59:22,169 root WARNING Running Urban Planning
+19:59:34,431 root INFO Running Urban Planning
+19:59:34,431 root ERROR Running Urban Planning
+19:59:34,431 root WARNING Running Urban Planning
+20:02:46,634 root INFO Running Urban Planning
+20:02:46,634 root ERROR Running Urban Planning
+20:02:46,634 root WARNING Running Urban Planning
+20:06:24,623 root INFO Running Urban Planning
+20:06:24,623 root ERROR Running Urban Planning
+20:06:24,623 root WARNING Running Urban Planning
+20:07:05,503 root INFO Running Urban Planning
+20:07:05,504 root ERROR Running Urban Planning
+20:07:05,504 root WARNING Running Urban Planning
+20:07:42,466 root INFO Running Urban Planning
+20:07:42,466 root ERROR Running Urban Planning
+20:07:42,466 root WARNING Running Urban Planning
+20:08:10,974 root INFO Running Urban Planning
+20:08:10,974 root ERROR Running Urban Planning
+20:08:10,975 root WARNING Running Urban Planning
+20:09:30,85 root INFO Running Urban Planning
+20:09:30,86 root ERROR Running Urban Planning
+20:09:30,86 root WARNING Running Urban Planning
+20:10:50,642 root INFO Running Urban Planning
+20:10:50,642 root ERROR Running Urban Planning
+20:10:50,642 root WARNING Running Urban Planning
+20:11:08,218 root INFO Running Urban Planning
+20:11:08,219 root ERROR Running Urban Planning
+20:11:08,219 root WARNING Running Urban Planning
+20:11:49,366 root INFO Running Urban Planning
+20:11:49,366 root ERROR Running Urban Planning
+20:11:49,366 root WARNING Running Urban Planning
+20:19:29,439 root INFO Info
+20:19:29,439 root ERROR error message
+20:19:29,439 root WARNING warning message
+20:26:34,138 root DEBUG This message should go to the log file
+20:26:34,138 root INFO So should this
+20:26:34,138 root WARNING And this, too
+20:26:34,138 root INFO Info
+20:26:34,138 root ERROR error message
+20:26:34,139 root WARNING warning message
+20:27:20,642 root DEBUG This message should go to the log file
+20:27:20,642 root INFO So should this
+20:27:20,642 root WARNING And this, too
+20:27:20,642 root INFO Info
+20:27:20,643 root ERROR error message
+20:27:20,643 root WARNING warning message
+20:27:55,491 root INFO Info
+20:27:55,492 root ERROR error message
+20:27:55,492 root WARNING warning message
+20:28:40,375 root INFO Info
+20:28:40,375 root ERROR error message
+20:28:40,375 root WARNING warning message
+20:29:29,433 root DEBUG This message should go to the log file
+20:29:29,433 root INFO So should this
+20:29:29,434 root WARNING And this, too
+21:56:10,59 root DEBUG This message should go to the log file
+21:56:10,60 root INFO So should this
+21:56:10,60 root WARNING And this, too
