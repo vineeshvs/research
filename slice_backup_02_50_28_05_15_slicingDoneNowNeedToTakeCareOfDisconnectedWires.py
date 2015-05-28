@@ -16,8 +16,8 @@ print "*************\n"
 """ FUNCTION DEFINITIONS """
 ############################
 
+"""Find a string between two strings"""
 def find_between(s, first, last):
-    """Find a string between two strings"""
     try:
         start = s.index(first)+ len(first)
         end = s.index(last, start)
@@ -32,14 +32,14 @@ def find_between(s, first, last):
     print a
     ''' 
 
+"""Print the contents of a file"""
 def print_file(file_name):
-    """Print the contents of a file"""
     f_1 = open (file_name)
     for line in f_1:
         print line    
 
+'''Remove spaces in a list of strings'''
 def rem_space(list_name):  
-    '''Remove spaces in a list of strings'''
     while True:
         try:
             list_name.remove("")
@@ -48,8 +48,8 @@ def rem_space(list_name):
             break
         pass
 
+""" Find out the modules which gives certain signals as output """
 def locate_modules(verilog_file, output_signal):
-    """ Find out the modules which gives certain signals as output """
     lines = open(verilog_file, 'rt').read()
     module=""
     k=0
@@ -192,7 +192,7 @@ def replace_all(text, dic):
         text = text.replace(i, j)
     return text
 
-def find_modules_input_fan_in_cone(verilog_file, MUT):
+def find_modules_input_fan_in_cone(verilo_file, MUT):
     """Definition of some lists"""
     """Queue which contains the signals in the fan-in cone of the MUT.\
     It is changed dynamically"""
@@ -203,9 +203,9 @@ def find_modules_input_fan_in_cone(verilog_file, MUT):
     primary_input_set=[]
     signal_module_pairs=[]
     modules_required.append(MUT)
-    input_queue=find_inputs_of_module(verilog_file,MUT)[0]
+    input_queue=find_inputs_of_module(VERILOG_FILE_NAME,MUT)[0]
     #print input_queue
-    primary_inputs=find_inputs_of_top_module(verilog_file)
+    primary_inputs=find_inputs_of_top_module(VERILOG_FILE_NAME)
     #print "primary_inputs: \n",primary_inputs
     #print modules_required
     """Loop to find modules_required (which have to be retained on slicing"""
@@ -216,18 +216,18 @@ def find_modules_input_fan_in_cone(verilog_file, MUT):
                 input_queue_traced.append(signal)
                 #print "input_queue_traced"
                 #print input_queue_traced
-                #print "locate_modules(verilog_file,signal) = %s" %(locate_modules(verilog_file,signal))
-                if(locate_modules(verilog_file,signal)!=""):
+                #print "locate_modules(VERILOG_FILE_NAME,signal) = %s" %(locate_modules(VERILOG_FILE_NAME,signal))
+                if(locate_modules(VERILOG_FILE_NAME,signal)!=""):
                     """If loop is to avoid blank module names"""
                     """For the purpose of plotting digraph, the signal and module driving\
                     the signal are shown as tuple (signal, module_with_signal_as_output)"""
-                    signal_module_pairs.append((signal,locate_modules(verilog_file,signal)))
-                    modules_required.append(locate_modules(verilog_file,signal))
+                    signal_module_pairs.append((signal,locate_modules(VERILOG_FILE_NAME,signal)))
+                    modules_required.append(locate_modules(VERILOG_FILE_NAME,signal))
                     #print remove_duplicates(modules_required)
-                    for i in range(len(find_inputs_of_module(verilog_file,\
-                                                                 locate_modules(verilog_file,signal))[0])):
+                    for i in range(len(find_inputs_of_module(VERILOG_FILE_NAME,\
+                                                                 locate_modules(VERILOG_FILE_NAME,signal))[0])):
                         input_queue.append(find_inputs_of_module\
-                                               (verilog_file,locate_modules(verilog_file,signal))[0][i])
+                                               (VERILOG_FILE_NAME,locate_modules(VERILOG_FILE_NAME,signal))[0][i])
                     #remove_duplicates(input_queue)
                     """
                     print "input_queue"
@@ -262,14 +262,14 @@ def slice_code(verilog_file, modules_to_be_sliced):
         #match=re.search(r'\w+\s%s' %(module), line)
             if match:
                 k=1
-                #print match.group()
+                print match.group()
             #inputs.append(match.group())        
             if k==1:
                 if (re.search(r';',line)):
-                    #print line
+                    print line
                     k=0
             elif k==0:
-                #print "k==0"
+                print "k==0"
                 f_sliced.write(line)
     f.close()
     f_sliced.close()
@@ -304,8 +304,7 @@ logging.warning("warning message")
 
 """Uncomment later"""
 #MUT = raw_input ("Give the name of the module to be tested:")
-MUT="u2_half_adder"
-#MUT="test1"
+MUT="test1"
 
 #print find_inputs_of_top_module(VERILOG_FILE_NAME)
 """Modules which have to be retained while slicing"""
@@ -334,43 +333,8 @@ for module in modules_to_be_sliced:
     outputs_modules_to_be_sliced=outputs_modules_to_be_sliced+find_inputs_of_module(VERILOG_FILE_NAME,module)[1]
 outputs_modules_to_be_sliced=remove_duplicates(outputs_modules_to_be_sliced)
 #print outputs_modules_to_be_sliced
+
 """Removing modules_to_be_sliced"""
 slice_code(VERILOG_FILE_NAME, modules_to_be_sliced)
-"""Reassigning the signals affected by slicing"""
-"""Reassigning the inputs of MUT"""
-potential_PO=[]
-inputs_to_be_deleted=[]
-print "inputs_modules_to_be_sliced = %s"  %(inputs_modules_to_be_sliced)
-for s in inputs_modules_to_be_sliced:
-    print "%s is an input of the modules_to_be_sliced" %(s)  
-    if s in outputs_modules_required:
-        if s not in inputs_modules_required:
-            potential_PO.append(s)
-            print "%s is not the input of any other module -> potential_PO" %(s)
-        elif s in inputs_modules_required :
-            print "%s is the input of some module -> NOP" %(s)
-    elif s not in outputs_modules_required:
-        if s not in inputs_modules_required:
-            inputs_to_be_deleted.append(s)
-        elif s in inputs_modules_required:
-            print "%s is the input of some module -> NOP " %(s)
-print  "potential_PO=%s" %(potential_PO)
-print "inputs_to_be_deleted=%s" %(inputs_to_be_deleted)    
-"""Reassigning the outputs of MUT"""
-potential_PI=[]
-outputs_to_be_deleted=[]
-print "outputs_modules_to_be_sliced = %s" %(outputs_modules_to_be_sliced)
-for s in outputs_modules_to_be_sliced:
-    print "%s is an output of the modules_to_be_sliced" %(s)  
-    if s in inputs_modules_required:
-        potential_PI.append(s)
-        print "%s is the input of some module -> potential_PI" %(s)
-    elif s not in inputs_modules_required:
-        outputs_to_be_deleted.append(s)
-        print "%s is not an input of any module -> delete it " %(s)
-print  "potential_PI=%s" %(potential_PI)
-print "outputs_to_be_deleted=%s" %(outputs_to_be_deleted)        
-        
-        
-
+    
 
