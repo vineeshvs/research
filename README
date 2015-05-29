@@ -39,3 +39,50 @@ This file will help you understand what's going on in the folder 'slicing' -- vi
 	// Outputs_top <- The word 'Outputs_top' is necessary in the comment before the outputs of top module
 	// End of inputs_top <-This string is necessary at the end of all input declarations of top module
 	// End of outputs_top <-This string is necessary at the end of all output declarations of top module
+* Slicing is done (Sample console output on running slice.py is given below)
+	* Configurations: 
+		* MUT: u2_half_adder
+		* Console output:
+		=====================================================================================================================
+		Removing modules_to_be_sliced
+		---------------------------------------------------------------------------------------------------------------------
+		Reassigning the signals affected by slicing into potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted
+		---------------------------------------------------------------------------------------------------------------------
+		inputs_modules_to_be_sliced = ['s1', 's0', 'a1', 'b1', 'd1', 'c3']
+		s1 is an input of the modules_to_be_sliced
+		s1 is not the input of any other module -> potential_PO
+		s0 is an input of the modules_to_be_sliced
+		s0 is the input of some module -> NOP
+		a1 is an input of the modules_to_be_sliced
+		b1 is an input of the modules_to_be_sliced
+		d1 is an input of the modules_to_be_sliced
+		c3 is an input of the modules_to_be_sliced
+		potential_PO=['s1']
+		inputs_to_be_deleted=['a1', 'b1', 'd1', 'c3']
+		s2 is an output of the modules_to_be_sliced
+		s2 is not an input of any module -> delete it 
+		d1 is an output of the modules_to_be_sliced
+		d1 is not an input of any module -> delete it 
+		c3 is an output of the modules_to_be_sliced
+		c3 is not an input of any module -> delete it 
+		s3 is an output of the modules_to_be_sliced
+		s3 is not an input of any module -> delete it 
+		potential_PI=[]
+		outputs_to_be_deleted=['s2', 'd1', 'c3', 's3']
+		-----------------------------------------------------------------------------------------
+		Adding potential_PO & potential_PI, deleting inputs_to_be_deleted & outputs_to_be_deleted
+		-----------------------------------------------------------------------------------------
+		match found
+		input a1 is deleted1
+		match found
+		input b1 is deleted1
+		output s1 written
+		match found
+		output s2 is deleted1
+		match found
+		output d1 is deleted1
+		match found
+		output s3 is deleted1
+		=====================================================================================================================
+	 
+

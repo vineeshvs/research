@@ -302,7 +302,7 @@ def assign_floating_signals(inputs_modules_to_be_sliced,outputs_modules_to_be_sl
     print  "potential_PO=%s" %(potential_PO)
     print "inputs_to_be_deleted=%s" %(inputs_to_be_deleted)    
     """Reassigning the outputs of MUT"""
-    print "outputs_modules_to_be_sliced = %s" %(outputs_modules_to_be_sliced)
+    #print "outputs_modules_to_be_sliced = %s" %(outputs_modules_to_be_sliced)
     for s in outputs_modules_to_be_sliced:
         print "%s is an output of the modules_to_be_sliced" %(s)  
         if s in inputs_modules_required:
@@ -315,62 +315,103 @@ def assign_floating_signals(inputs_modules_to_be_sliced,outputs_modules_to_be_sl
     print "outputs_to_be_deleted=%s" %(outputs_to_be_deleted)        
     return (potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted)
 
-def add_IO_pins_to_sliced_code(VERILOG_FILE_NAME,potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted):
-    """Adding potential_PO & potential_PI, deleting inputs_to_be_deleted & outputs_to_be_deleted"""
-    """Inputs: VERILOG_FILE_NAME,potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted"""
+def add_IO_pins_to_sliced_code(VERILOG_FILE_NAME,potential_PO,potential_PI,\
+                                   inputs_to_be_deleted,outputs_to_be_deleted):
+    """Adding potential_PO & potential_PI, deleting inputs_to_be_deleted & \
+    outputs_to_be_deleted to the sliced code """
+    """Inputs: VERILOG_FILE_NAME,potential_PO,potential_PI,inputs_to_be_deleted,\
+    outputs_to_be_deleted"""
     """Outputs: The modified Verilog code in the directory ./output_files/"""
     i=0
     o=0
+    k=0
     f=open('output_files/'+VERILOG_FILE_NAME.split('.v')[0]+"_sliced"+'.v', 'rt')
-    f_IO_added=open('output_files/'+VERILOG_FILE_NAME.split('.v')[0]+'_sliced_with_modified_IOports'+'.v', 'w')
+    f_IO_added=open('output_files/'+VERILOG_FILE_NAME.split('.v')[0]+\
+                        '_sliced_with_modified_IOports'+'.v', 'w')
     for line in f:
+        k=0
         if "Inputs_top" in line:
-            print "Inputs_top found"
+            #print "Inputs_top found"
             i=1
             f_IO_added.write(line)
             for signal in potential_PI:
                 f_IO_added.write("\ninput %s" %(signal))
-                print "\ninput %s written" %(signal)
+                print "input %s written" %(signal)
         elif "Outputs_top" in line:
-            print "Outputs_top found"
+            #print "Outputs_top found"
             o=1
             f_IO_added.write(line)
             for signal in potential_PO:
                 f_IO_added.write("\toutput %s;\n" %(signal))
-                print "\noutput %s written" %(signal)
+                print "output %s written" %(signal)
         elif i==1:
-            print "i==%d"%(i)
+            #print "i==%d"%(i)
             if inputs_to_be_deleted!=[]:
                 for signal in inputs_to_be_deleted:
-                    if ("input %s" %(signal)) in line:
-                        print "input %s is deleted" %(signal)
-                    elif "End of inputs_top" in line:
-                        f_IO_added.write(line)
-                        i=0
+                    #print line+"1"
+                    #if ("input\s*%s;" %(signal)) in line:
+                    #match=re.search(r'^\s*input\s*%s;' %(signal), line)
+                    match=re.search(r'input  %s;' %(signal), line)
+                    if match:
+                        print"match found" 
+                        print "input %s is deleted1" %(signal)
+                        break
                     else:
-                        f_IO_added.write(line)
-                        print "%s written" %(line)
+                        k=k+1
+                    if k>=len(inputs_to_be_deleted):
+                        k=0
+                        if "End of inputs_top" in line:
+                            #print "End of inputs_top1"
+                            f_IO_added.write(line)
+                            i=0
+                        else:
+                            f_IO_added.write(line)
+                            #print "%s written1" %(line)
             else:
                 if "End of inputs_top" in line:
+                    print "End of inputs_top2"
                     f_IO_added.write(line)
                     i=0
                 else:
                     f_IO_added.write(line)
-                    print "%s written, inputs_to_be_deleted was null" %(line)                
-        elif o==1: #WORK_never entering this loop
-            print "o==%d"%(o)
-            for signal in outputs_to_be_deleted:
-                if ("output %s" %(signal)) in line:
-                    print "output %s is deleted" %(signal)
-                elif "End of outputs_top" in line:
+                    print "%s written, inputs_to_be_deleted was null2" %(line)
+        elif o==1:
+            #print "i==%d"%(i)
+            if outputs_to_be_deleted!=[]:
+                for signal in outputs_to_be_deleted:
+                    #print line+"1"
+                    #if ("input\s*%s;" %(signal)) in line:
+                    #match=re.search(r'^\s*input\s*%s;' %(signal), line)
+                    #match=re.search(r'output  %s;' %(signal), line)
+                    match=re.search(r'output\s*%s;' %(signal), line)
+                    if match:
+                        print"match found" 
+                        print "output %s is deleted1" %(signal)
+                        break
+                    else:
+                        #print "k increment"
+                        #print line
+                        k=k+1
+                    if k>=len(outputs_to_be_deleted):
+                        k=0
+                        if "End of outputs_top" in line:
+                            #print "End of outputs_top1"
+                            f_IO_added.write(line)
+                            i=0
+                        else:
+                            f_IO_added.write(line)
+                            #print "%s written1" %(line)
+            else:
+                if "End of outputs_top" in line:
+                    print "End of outputs_top2"
                     f_IO_added.write(line)
-                    o=0
+                    i=0
                 else:
                     f_IO_added.write(line)
-                    print "%s written" %(line)
+                    print "%s written, outputs_to_be_deleted was null2" %(line)    
         elif i==0 and o==0:
             f_IO_added.write(line)
-            print "Nothing much happened, writing the line"
+            #print "Nothing much happened, writing the line"
     f.close()
     f_IO_added.close()
 
@@ -403,8 +444,8 @@ logging.warning("warning message")
 
 """Uncomment later"""
 #MUT = raw_input ("Give the name of the module to be tested:")
-#MUT="u2_half_adder"
-MUT="test1"
+MUT="u2_half_adder"
+#MUT="test1"
 
 #print find_inputs_of_top_module(VERILOG_FILE_NAME)
 """Modules which have to be retained while slicing"""
@@ -433,12 +474,19 @@ for module in modules_to_be_sliced:
     outputs_modules_to_be_sliced=outputs_modules_to_be_sliced+find_inputs_of_module(VERILOG_FILE_NAME,module)[1]
 outputs_modules_to_be_sliced=remove_duplicates(outputs_modules_to_be_sliced)
 #print outputs_modules_to_be_sliced
+print "Removing modules_to_be_sliced"
 """Removing modules_to_be_sliced"""
 slice_code(VERILOG_FILE_NAME, modules_to_be_sliced)
+print "---------------------------------------------------------------------------------------------------------------------"
+print "Reassigning the signals affected by slicing into potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted"
+print "---------------------------------------------------------------------------------------------------------------------"
 """Decide upon what to do with the floating signals due to slicing"""
 potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted=\
     assign_floating_signals(inputs_modules_to_be_sliced,outputs_modules_to_be_sliced,\
                                 inputs_modules_required,outputs_modules_required)
 #print potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted
+print "-----------------------------------------------------------------------------------------"
+print "Adding potential_PO & potential_PI, deleting inputs_to_be_deleted & outputs_to_be_deleted"
+print "-----------------------------------------------------------------------------------------"
 """Adding potential_PO & potential_PI, deleting inputs_to_be_deleted & outputs_to_be_deleted"""
 add_IO_pins_to_sliced_code(VERILOG_FILE_NAME,potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted)

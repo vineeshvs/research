@@ -6,17 +6,12 @@ module full_adder (a0, b0, c0, a1, b1, c_out, s_out, s2, s3);
 	input  a0;
 	input  b0;
 	input  c0;
-	input  a1;
-	input  b1;
 	// End of inputs_top	
 
 	// Outputs_top
-	output d1;
-	output c3;
+	output s1;
 	output c_out;
 	output s_out;
-	output s2;
-	output d1;
 	// End of outputs_top	
 
 	// Wires
@@ -58,20 +53,17 @@ module full_adder (a0, b0, c0, a1, b1, c_out, s_out, s2, s3);
 				);                    
 
 	// Module instantiation
-	test1 test1 (
-		// Inputs
-		.in_1(s1),
-		.in_2(s0),
-		.in_3(a1),
-		.in_4(b1),
-		// End of inputs
-		// Outputs
-		.out_1(s2),
-		.out_2(d1),
-		.out_3(c3)
-		// End of outputs
-		);                 
 
 	// Module instantiation
+	test2 test2 (
+		// Inputs
+		.in_1(d1),
+		.in_2(c3),
+		.in_3(b1),
+		// End of inputs
+		// Outputs
+		.out_1(s3)
+		// End of outputs
+		);
 
 endmodule 
