@@ -31,3 +31,11 @@ This file will help you understand what's going on in the folder 'slicing' -- vi
 	* For extracting the inputs of the top module, the following conditions are to be satisfied
 		* input  a0; <-- Each input should be separately declared (& NOT as 'input a0,b0;')
    		  input  b0; <-- 'input[SPACE][INPUT_NAME];' 	
+	
+29/05/15:
+---------
+* Restricitons on Verilog code (Contd.):
+	// Inputs_top <- The word 'Inputs_top' is necessary in the comment before the inputs of top module
+	// Outputs_top <- The word 'Outputs_top' is necessary in the comment before the outputs of top module
+	// End of inputs_top <-This string is necessary at the end of all input declarations of top module
+	// End of outputs_top <-This string is necessary at the end of all output declarations of top module

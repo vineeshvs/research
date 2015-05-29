@@ -1,21 +1,23 @@
 // Full Adder rtl
 
-module full_adder (a0, b0, c0, a1, b1, c_out, s_out, s2, d_out, s3);
+module full_adder (a0, b0, c0, a1, b1, c_out, s_out, s2, s3);
 
-   // Inputs
+   // Inputs_top
    input  a0;
    input  b0;
    input  c0;
    input  a1;
    input  b1;
+   // End of inputs_top	
       
-   // Outputs
+   // Outputs_top
    output c_out;
    output s_out;
    output s2;
    output d1;
    output s3;
-
+   // End of outputs_top	
+   
    // Wires
    wire   c1;
    wire   c2;
@@ -26,7 +28,7 @@ module full_adder (a0, b0, c0, a1, b1, c_out, s_out, s2, d_out, s3);
    // Some assignments
    assign carry_out = c1 | c2;
    assign s_out = s1;
-   assign d_out = d1;
+   //assign d_out = d1;
    
    // Instantiating two half-adders to make the circuit.
    
