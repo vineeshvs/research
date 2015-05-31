@@ -70,7 +70,9 @@ class Example(QtGui.QMainWindow):
 	runb = QtGui.QPushButton('Run', self)
         runb.setCheckable(True)
         runb.move(20, 130)
-        runb.clicked[bool].connect(self.run)     
+        runb.clicked[bool].connect(self.run) 
+
+        
 
         self.setGeometry(300, 200, 500, 500)
         self.setWindowTitle('Verilog slicer')       
