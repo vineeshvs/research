@@ -6,7 +6,7 @@ git add *
 echo "\nENTER COMMIT MESSAGE"
 echo "*************************\n"
 read commit_message
-git commit -m $commit_message
+git commit -m '$commit_message'
 echo "\n\nGIT STATUS\n\n"
 echo "*************************\n"
 git status
