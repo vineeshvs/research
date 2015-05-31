@@ -259,11 +259,11 @@ def slice_code(verilog_file, modules_to_be_sliced):
     for module in modules_to_be_sliced:
         for line in f:
             match=re.search(r'^\s*\w+\s%s' %(module), line)
-        #match=re.search(r'\w+\s%s' %(module), line)
+        	#match=re.search(r'\w+\s%s' %(module), line)
             if match:
                 k=1
                 #print match.group()
-            #inputs.append(match.group())        
+            	#inputs.append(match.group())        
             if k==1:
                 if (re.search(r';',line)):
                     #print line

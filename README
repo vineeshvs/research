@@ -1,5 +1,9 @@
 This file will help you understand what's going on in the folder 'slicing' -- vineeshvs (21/05/15)
 -------------------------------------------------------------------------------------------------------------------------------------
+LEGEND:
+	> : Thing to do
+	? : Doubts
+-------------------------------------------------------------------------------------------------------------------------------------
 
 22/05/15:
 ---------
@@ -84,5 +88,9 @@ This file will help you understand what's going on in the folder 'slicing' -- vi
 		match found
 		output s3 is deleted1
 		=====================================================================================================================
-	 
+30/05/15:
+---------
+	* file name changed from slice.py to slicing.py due to import problem in the gui with the name import 	 
+	> Change the location of 'output_files' later. Now it is kept in the working directory
 
+THE WORK IS SUSPENDED UNTIL 11/06/15 DUE TO PHD EXAMINATION. SEE YOU LATER

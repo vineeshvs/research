@@ -87,5 +87,4 @@ This file will help you understand what's going on in the folder 'slicing' -- vi
 30/05/15:
 ---------
 	* file name changed from slice.py to slicing.py due to import problem in the gui with the name import 	 
-	> Change the location of 'output_files' later. Now it is kept in the working directory
 

@@ -7,7 +7,7 @@ import sys
 import re
 import logging
 """Importing the constants defined in the file constants.py"""
-from constants import *
+"""from constants import *"""
 from glob import iglob
 
 print "\nHere we go" 
@@ -255,15 +255,16 @@ def slice_code(verilog_file, modules_to_be_sliced):
     """Removing modules_to_be_sliced"""
     k=0
     f=open(verilog_file, 'rt')
-    f_sliced=open('output_files/'+verilog_file.split('.v')[0]+'_sliced'+'.v', 'w')
+    #f_sliced=open('output_files/'+verilog_file.split('.v')[0]+'_sliced'+'.v', 'w')
+    f_sliced=open(verilog_file.split('.v')[0]+'_sliced'+'.v', 'w')
     for module in modules_to_be_sliced:
         for line in f:
             match=re.search(r'^\s*\w+\s%s' %(module), line)
-        #match=re.search(r'\w+\s%s' %(module), line)
+        	#match=re.search(r'\w+\s%s' %(module), line)
             if match:
                 k=1
                 #print match.group()
-            #inputs.append(match.group())        
+            	#inputs.append(match.group())        
             if k==1:
                 if (re.search(r';',line)):
                     #print line
@@ -325,8 +326,13 @@ def add_IO_pins_to_sliced_code(VERILOG_FILE_NAME,potential_PO,potential_PI,\
     i=0
     o=0
     k=0
+    """
     f=open('output_files/'+VERILOG_FILE_NAME.split('.v')[0]+"_sliced"+'.v', 'rt')
     f_IO_added=open('output_files/'+VERILOG_FILE_NAME.split('.v')[0]+\
+                        '_sliced_with_modified_IOports'+'.v', 'w')
+    """
+    f=open(VERILOG_FILE_NAME.split('.v')[0]+"_sliced"+'.v', 'rt')
+    f_IO_added=open(VERILOG_FILE_NAME.split('.v')[0]+\
                         '_sliced_with_modified_IOports'+'.v', 'w')
     for line in f:
         k=0
@@ -415,78 +421,79 @@ def add_IO_pins_to_sliced_code(VERILOG_FILE_NAME,potential_PO,potential_PI,\
     f.close()
     f_IO_added.close()
 
-""" MAIN()"""
-##############
-
-"""Declarations"""
-modules_required=[]
-inputs_modules_required=[]
-outputs_modules_required=[]
-all_modules=[]
-modules_to_be_sliced=[]
-inputs_modules_to_be_sliced=[]
-outputs_modules_to_be_sliced=[]
-
-"""Logging is not updating th file: Do later"""
-#logger=log_data()
-#logging=log_data()
-"""
-logging.basicConfig(
+def slicing_main(VERILOG_FILE_NAME,MUT):
+    """The main fuction is put inside this function slicing_main so that it can be called by the GUI"""
+    """Declarations"""
+    modules_required=[]
+    inputs_modules_required=[]
+    outputs_modules_required=[]
+    all_modules=[]
+    modules_to_be_sliced=[]
+    inputs_modules_to_be_sliced=[]
+    outputs_modules_to_be_sliced=[]
+    """Logging is not updating th file: Do later"""
+    #logger=log_data()
+    #logging=log_data()
+    """
+    logging.basicConfig(
     filename='log/slice_log.txt',
     filemode='w',
     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
     datefmt='%H:%M:%S',
     level=logging.DEBUG)
-logging.info("Info")
-logging.error("error message")
-logging.warning("warning message")
-"""
+    logging.info("Info")
+    logging.error("error message")
+    logging.warning("warning message")
+    """    
+    """Uncomment later"""
+    #MUT = raw_input ("Give the name of the module to be tested:")
+    #MUT="u2_half_adder"
+    #MUT="test1"
+    #print find_inputs_of_top_module(VERILOG_FILE_NAME)
+    """Modules which have to be retained while slicing"""
+    modules_required=find_modules_input_fan_in_cone(VERILOG_FILE_NAME, MUT)[0]
+    """List of all sub-modules in which does port-mapping in VERILOG_FILE_NAME""" 
+    all_modules=find_sub_modules(VERILOG_FILE_NAME)
+    """Modules which should be removed"""
+    modules_to_be_sliced=list(set(all_modules)-set(modules_required))
+    """Find inputs of modules_required"""
+    for module in modules_required:
+        inputs_modules_required=inputs_modules_required+find_inputs_of_module(VERILOG_FILE_NAME,module)[0]
+        inputs_modules_required=remove_duplicates(inputs_modules_required)
+    #print inputs_modules_required
+        """Find inputs of modules_to_be_sliced"""
+        for module in modules_to_be_sliced:
+            inputs_modules_to_be_sliced=inputs_modules_to_be_sliced+find_inputs_of_module(VERILOG_FILE_NAME,module)[0]
+    inputs_modules_to_be_sliced=remove_duplicates(inputs_modules_to_be_sliced)
+    #print inputs_modules_to_be_sliced
+    """Find outputs of modules_required"""
+    for module in modules_required:
+        outputs_modules_required=outputs_modules_required+find_inputs_of_module(VERILOG_FILE_NAME,module)[1]
+    outputs_modules_required=remove_duplicates(outputs_modules_required)
+    #print outputs_modules_required
+    """Find outputs of modules_to_be_sliced"""
+    for module in modules_to_be_sliced:
+        outputs_modules_to_be_sliced=outputs_modules_to_be_sliced+find_inputs_of_module(VERILOG_FILE_NAME,module)[1]
+    outputs_modules_to_be_sliced=remove_duplicates(outputs_modules_to_be_sliced)
+    #print outputs_modules_to_be_sliced
+    print "Removing modules_to_be_sliced"
+    """Removing modules_to_be_sliced"""
+    slice_code(VERILOG_FILE_NAME, modules_to_be_sliced)
+    print "---------------------------------------------------------------------------------------------------------------------"
+    print "Reassigning the signals affected by slicing into potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted"
+    print "---------------------------------------------------------------------------------------------------------------------"
+    """Decide upon what to do with the floating signals due to slicing"""
+    potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted=\
+        assign_floating_signals(inputs_modules_to_be_sliced,outputs_modules_to_be_sliced,\
+                                    inputs_modules_required,outputs_modules_required)
+    #print potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted
+    print "-----------------------------------------------------------------------------------------"
+    print "Adding potential_PO & potential_PI, deleting inputs_to_be_deleted & outputs_to_be_deleted"
+    print "-----------------------------------------------------------------------------------------"
+    """Adding potential_PO & potential_PI, deleting inputs_to_be_deleted & outputs_to_be_deleted"""
+    add_IO_pins_to_sliced_code(VERILOG_FILE_NAME,potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted)
 
-"""Uncomment later"""
-#MUT = raw_input ("Give the name of the module to be tested:")
-MUT="u2_half_adder"
-#MUT="test1"
+""" MAIN()"""
+##############
 
-#print find_inputs_of_top_module(VERILOG_FILE_NAME)
-"""Modules which have to be retained while slicing"""
-modules_required=find_modules_input_fan_in_cone(VERILOG_FILE_NAME, MUT)[0]
-"""List of all sub-modules in which does port-mapping in VERILOG_FILE_NAME""" 
-all_modules=find_sub_modules(VERILOG_FILE_NAME)
-"""Modules which should be removed"""
-modules_to_be_sliced=list(set(all_modules)-set(modules_required))
-"""Find inputs of modules_required"""
-for module in modules_required:
-    inputs_modules_required=inputs_modules_required+find_inputs_of_module(VERILOG_FILE_NAME,module)[0]
-inputs_modules_required=remove_duplicates(inputs_modules_required)
-#print inputs_modules_required
-"""Find inputs of modules_to_be_sliced"""
-for module in modules_to_be_sliced:
-    inputs_modules_to_be_sliced=inputs_modules_to_be_sliced+find_inputs_of_module(VERILOG_FILE_NAME,module)[0]
-inputs_modules_to_be_sliced=remove_duplicates(inputs_modules_to_be_sliced)
-#print inputs_modules_to_be_sliced
-"""Find outputs of modules_required"""
-for module in modules_required:
-    outputs_modules_required=outputs_modules_required+find_inputs_of_module(VERILOG_FILE_NAME,module)[1]
-outputs_modules_required=remove_duplicates(outputs_modules_required)
-#print outputs_modules_required
-"""Find outputs of modules_to_be_sliced"""
-for module in modules_to_be_sliced:
-    outputs_modules_to_be_sliced=outputs_modules_to_be_sliced+find_inputs_of_module(VERILOG_FILE_NAME,module)[1]
-outputs_modules_to_be_sliced=remove_duplicates(outputs_modules_to_be_sliced)
-#print outputs_modules_to_be_sliced
-print "Removing modules_to_be_sliced"
-"""Removing modules_to_be_sliced"""
-slice_code(VERILOG_FILE_NAME, modules_to_be_sliced)
-print "---------------------------------------------------------------------------------------------------------------------"
-print "Reassigning the signals affected by slicing into potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted"
-print "---------------------------------------------------------------------------------------------------------------------"
-"""Decide upon what to do with the floating signals due to slicing"""
-potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted=\
-    assign_floating_signals(inputs_modules_to_be_sliced,outputs_modules_to_be_sliced,\
-                                inputs_modules_required,outputs_modules_required)
-#print potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted
-print "-----------------------------------------------------------------------------------------"
-print "Adding potential_PO & potential_PI, deleting inputs_to_be_deleted & outputs_to_be_deleted"
-print "-----------------------------------------------------------------------------------------"
-"""Adding potential_PO & potential_PI, deleting inputs_to_be_deleted & outputs_to_be_deleted"""
-add_IO_pins_to_sliced_code(VERILOG_FILE_NAME,potential_PO,potential_PI,inputs_to_be_deleted,outputs_to_be_deleted)
+slicing_main("/run/media/vineeth/FUN/trunk/research/work/slicing/full_adder.v","u2_half_adder")

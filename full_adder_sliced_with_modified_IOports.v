@@ -6,16 +6,12 @@ module full_adder (a0, b0, c0, a1, b1, c_out, s_out, s2, s3);
 	input  a0;
 	input  b0;
 	input  c0;
-	input  a1;
-	input  b1;
 	// End of inputs_top	
 
 	// Outputs_top
+	output s1;
 	output c_out;
 	output s_out;
-	output s2;
-	output d1;
-	output s3;
 	// End of outputs_top	
 
 	// Wires
